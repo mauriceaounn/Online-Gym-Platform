@@ -7,8 +7,7 @@ The Gym and Fitness website places great emphasis on fostering community engagem
 
 With a user-friendly design and intuitive interface, the Gym and Fitness website ensures a seamless experience across different devices. JavaScript-driven interactivity adds flair to the user interface, creating an engaging and visually appealing environment.
 
-Disclaimer: 
-
+Disclaimer: This app is a university project made by me and my colleagues and I don’t claim any responsibility for any errors or malfunctions on your end!
 Screenshots:
 
 ![image](https://github.com/mauriceaounn/Online-Gym-Platform/assets/123246722/06403e99-369e-42f3-825d-5b45040f3e98)
