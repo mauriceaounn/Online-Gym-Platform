@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Portal</title>
+    <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body>
+    <div class="app">
+        <div class="screen join-screen active">
+            <div class="form">
+                <h2>Join Chatroom</h2>
+                <div class="form-input">
+                    <label style="color: yellow;">Username:</label>
+                    <input type="text" id="username">
+                </div>
+                <div class="form-input">
+                    <button id="join-user">Join</button>
+                    <a href="/"><button>Go to Website</button></a>
+                </div>
+            </div>
+        </div>
+        <div class="screen chat-screen">
+            <div class="header">
+            <div class="logo">Chatroom</div>
+            <button id="exit-chat">Exit</button>
+            </div>
+            <div class="messages">
+            </div>
+            <div class="typebox">
+                <input type="text" id="message-input">
+                <button id="send-message">Send</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.3/socket.io.js"></script>
+    <script>
+
+      
+      const socket = io();
+    
+      // Function to handle joining the chat
+      const joinChat = () => {
+        const usernameInput = document.getElementById('username');
+        const username = usernameInput.value.trim();
+        if (username !== '') {
+          // Send a "join" event to the server
+          socket.emit('join', username);
+    
+          // Hide the join screen and show the chat screen
+          const joinScreen = document.querySelector('.join-screen');
+          const chatScreen = document.querySelector('.chat-screen');
+          joinScreen.classList.remove('active');
+          chatScreen.classList.add('active');
+        }
+      };
+    
+      // Example code to send a message to the server
+      const sendMessage = () => {
+        const messageInput = document.getElementById('message-input');
+        const message = messageInput.value.trim();
+        if (message !== '') {
+          socket.emit('chat message', message);
+          messageInput.value = '';
+        }
+      };
+    
+      // Event listener for join button click
+      const joinButton = document.getElementById('join-user');
+      joinButton.addEventListener('click', joinChat);
+    
+      // Event listener for send message button click
+      const sendButton = document.getElementById('send-message');
+      sendButton.addEventListener('click', sendMessage);
+    
+      // Event listener for exit button click
+      const exitButton = document.getElementById('exit-chat');
+      exitButton.addEventListener('click', () => {
+        socket.emit('exit');
+        location.reload(); // Reload the page to return to the join screen
+      });
+    
+      // Example code to receive a message from the server
+      socket.on('chat message', ({ username, message }) => {
+        const messagesContainer = document.querySelector('.messages');
+        const newMessage = document.createElement('div');
+        newMessage.classLis.add('message');
+    
+        // Set the appropriate class based on the sender
+        if (username === socket.username) {
+          newMessage.classList.add('message-right')
+        } else {
+          newMessage.classList.add('message-left')
+        }
+    
+        newMessage.innerHTML = `<strong>${username}:</strong> ${message}`;
+        messagesContainer.appendChild(newMessage);
+      });
+    
+      // Example code to handle a user joining the chat
+      socket.on('user joined', (username) => {
+        const messagesContainer = document.querySelector('.messages')
+        const newMessage = document.createElement('div')
+        newMessage.classList.add('message')
+        newMessage.classList.add('message-info')
+        newMessage.textContent = `${username} joined the chat`;
+        messagesContainer.appendChild(newMessage)
+      })
+    
+      // Example code to handle a user exiting the chat
+      socket.on('user exited', (username) => {
+        const messagesContainer = document.querySelector('.messages');
+        const newMessage = document.createElement('div');
+        newMessage.classList.add('message');
+        newMessage.classList.add('message-info');
+        newMessage.textContent = `${username} exited the chat`;
+        messagesContainer.appendChild(newMessage);
+      })
+    </script>
+    
+  
+  
+
+</body>
+</html>
